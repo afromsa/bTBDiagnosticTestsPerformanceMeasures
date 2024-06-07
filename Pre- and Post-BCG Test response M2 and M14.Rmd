@@ -1,0 +1,467 @@
+---
+title: "M2 and M14 Post-BCG"
+author: "Abebe F"
+date: "2023-08-23"
+output: html_document
+---
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(gtsummary)
+library(sjPlot)
+library(ggstatsplot)
+```
+
+Reading the skin test immune response data
+```{r}
+TST_AllAGs <-read.csv('TST_AllAGs.csv', stringsAsFactors = FALSE)
+names(TST_AllAGs)
+```
+
+Extracting data to make Fig. 1 a) post-BCG, pre-exposure skin test immune response
+```{r}
+PostexposureTSTM2 <-  TST_AllAGs %>% 
+  select(Treatment, Diagnosis, M2  ) %>% 
+  filter(M2 != "NA")
+PostexposureTSTM2
+```
+
+Producing Fig. 1 a) post-BCG, pre-exposure skin test immune response
+
+```{r}
+library(ggsignif)
+PostexposureTSTM2$Diagnosis <- factor(PostexposureTSTM2$Diagnosis, levels=c("DST10", "PPD-A", "SIT", "CCT"))
+ggplot(data=PostexposureTSTM2, aes(x=Diagnosis, y=M2, colour = Treatment))+ geom_jitter(position=position_jitterdodge(jitter.width = 0.17, dodge.width = 0.30), pch = 21) +
+stat_summary(fun=median, geom = "crossbar", position = position_dodge(width = 1.0), linewidth =0.20) +
+  labs(title = "a)",
+    x = "Diagnostic antigens",
+    y = "Change in skin thickness (∆mm)",
+    colour = "Treatment") +
+  scale_x_discrete(labels = c("DST10" = "DIVA",
+                              "PPD-A" = "PPD-A",
+                              "SIT" = "SIT",
+                              "CCT" = "CCT")) +
+  geom_hline(yintercept=2.0, linetype="dashed", color = "red",linewidth =0.6) +
+geom_hline(yintercept=4.0, linetype="dashed", color = "blue",linewidth =0.6) +
+ scale_y_continuous(expand = c(0,0)) +
+  expand_limits(y=c(-4,36.0)) +
+  scale_y_continuous(breaks=seq(-12.0, 36.0, 8.0)) +
+  theme(text = element_text(size = 28, face = "bold")) + 
+  geom_signif(y_position = c(34.0,34.0,34.0), xmin = c( 1.8,2.8,3.8), xmax = c( 2.2, 3.2, 4.2), annotation = c( "****", "****", "****"),  tip_length = 0.01, color="black", size = 0.7) + 
+  geom_signif(y_position = c(-3.8,-7.8,-11.8), xmin = c(0.9,0.9,0.9), 
+              xmax = c(1.9,2.9,3.9), annotation = c("ns", "ns", "ns"),
+              tip_length = 0.001, color="#FF6666", size = 0.7) + 
+  geom_signif(y_position = c(20.0, 24.0,28.0), xmin = c(1.1,1.1,1.1), 
+              xmax = c(2.1,3.1,4.1), annotation = c("****","****","****"),
+              tip_length = 0.01, color="#00CCCC", size = 0.7) + theme_light() 
+
+ggsave(file = "M2 Post BCG TST Vacs vs Controls.tiff", units="in", width=4, height=3.5, dpi=1200)
+```
+
+Reading post-BCG, pre-exposure IGRA test immune response data
+```{r}
+IGRA_AllAGs <-read.csv('IGRA_AllAGs.csv', stringsAsFactors = FALSE)
+names(IGRA_AllAGs)
+
+```
+Extracting post-BCG, pre-exposure IGRA test immune response data to make Fig. 1 b) 
+```{r}
+IGRAM2 <- IGRA_AllAGs %>% 
+  select(Treatment, Diagnosis, M2) %>% 
+ filter(M2!="NA")
+IGRAM2
+```
+
+Plotting Fig. 1 b) post-BCG, pre-exposure IGRA test immune response
+
+```{r}
+library(ggsignif)
+IGRAM2$Diagnosis <- factor(IGRAM2$Diagnosis, levels=c("DST1", "PPD-A", "PPD-B", "PPD(B-A)"))
+ggplot(data=IGRAM2, aes(x=Diagnosis, y=M2, colour = Treatment))+ geom_jitter(position=position_jitterdodge(jitter.width = 0.17, dodge.width = 0.50), pch = 21) +
+stat_summary(fun=median, geom = "crossbar", position = position_dodge(width = 1.0), linewidth =0.20) +
+  labs(title = "b)",
+    x = "Diagnostic antigens",
+    y = "Delta_OD450nm",
+    colour = "Treatment") +
+  scale_x_discrete(labels = c("DST1" = "DIVA",
+                              "PPD-A" = "PPD-A",
+                              "SIT" = "PPD-B",
+                              "CCT" = "PPD (B-A)")) +
+ geom_hline(yintercept=0.1, linetype="dashed", color = "red",linewidth =0.6) +
+ scale_y_continuous(expand = c(0,0)) +
+ expand_limits(y=c(-1.8,6.2)) +
+ scale_y_continuous(breaks=seq(0.0, 6.0, 1.0)) + 
+ theme(text = element_text(size = 28, face = "bold")) +
+ theme(text = element_text(size = 18, face = "bold")) + 
+ geom_signif(y_position = c(5.5,5.5,5.5), xmin = c( 1.7,2.7,3.7), xmax  = c( 2.3, 3.3, 4.3), annotation = c( "****", "****","****" ),     tip_length = 0.01, color="black", size = 0.7) + 
+  geom_signif(y_position = c(-0.8, -1.4,-1.9), xmin = c(0.9,0.9,0.9), 
+  xmax = c(1.9,2.9,3.9), annotation = c("****", "****", "ns"),
+  tip_length = 0.001, color="#FF6666", size = 0.7) + 
+  geom_signif(y_position = c(3.0, 3.6,4.5), xmin = c(1.1,1.1,1.1), 
+  xmax = c(2.1,3.1, 4.1), annotation = c("****","****","****"),
+  tip_length = 0.01, color="#00CCCC", size = 0.7) + theme_light() 
+
+ggsave(file = "IGRA M2 PostBCG All C and V.tiff", units="in", width=4.0, height=3.5, dpi=1200)
+```
+
+Extracting the 12th month post-exposure (14th month post-BCG) skin test immune response data to make Fig. 2 a) 
+
+```{r}
+TSTM14 <- TST_AllAGs %>% 
+  select(VL, Diagnosis, M14  ) %>% 
+  filter(M14 != "NA")
+TSTM14
+```
+
+Plotting the 12th month post-exposure (14th month post-BCG) skin test immune response to make Fig. 2 a)
+```{r}
+library(ggsignif)
+TSTM14$Diagnosis <- factor(TSTM14$Diagnosis, levels=c("DST10", "PPD-A", "SIT", "CCT"))
+ggplot(data=TSTM14, aes(x=Diagnosis, y=M14, colour = VL))+ geom_jitter(position=position_jitterdodge(jitter.width = 0.17, dodge.width = 0.30), pch = 21) +
+stat_summary(fun=median, geom = "crossbar", position = position_dodge(width = 1.0), linewidth =0.2) +
+  labs(title = "a)",
+    x = "Diagnostic antigens",
+    y = "Change in skin thickness (∆mm)",
+    colour = "Visible lesion") +
+  scale_x_discrete(labels = c("DST10" = "DIVA",
+                              "PPD-A" = "PPD-A",
+                              "SIT" = "SIT",
+                              "CCT" = "CCT")) +
+  geom_hline(yintercept=2.0, linetype="dashed", color = "red",linewidth =0.6) +
+geom_hline(yintercept=4.0, linetype="dashed", color = "blue",linewidth =0.6) +
+ scale_y_continuous(expand = c(0,0)) +
+  expand_limits(y=c(-4,60.0)) +
+  scale_y_continuous(breaks=seq(-12.0, 60.0, 8.0)) +
+  theme(text = element_text(size = 28, face = "bold")) + 
+  geom_signif(y_position = c(56.0,56.0,56.0,56.0), xmin = c(0.8, 1.8,2.8,3.8), xmax = c(1.2, 2.2, 3.2, 4.2), annotation = c("**", "*", "**", "**"),  tip_length = 0.01, color="black", size = 0.7) + 
+  geom_signif(y_position = c(-3.8,-7.8,-11.8), xmin = c(0.9,0.9,0.9), 
+              xmax = c(1.9,2.9,3.9), annotation = c("ns", "ns", "ns"),
+              tip_length = 0.001, color="#FF6666", size = 0.7) + 
+  geom_signif(y_position = c(32.0, 44.0,50.0), xmin = c(1.1,1.1,1.1), 
+              xmax = c(2.1,3.1,4.1), annotation = c("ns","****","**"),
+              tip_length = 0.01, color="#00CCCC", size = 0.7) + theme_light() 
+
+ggsave(file = "M14 Post-exposure TST VL vs NVL.tiff", units="in", width=4, height=3.5, dpi=1200)
+```
+
+Extracting 12th month post-exposure (14th month postBCG) IGRA test immune response data to make Fig. 2 b)
+
+```{r}
+IGRAM14 <- IGRA_AllAGs %>% 
+  select(Treatment, Diagnosis, M14, VL) %>% 
+ filter(M14!="NA")
+IGRAM14
+```
+
+```{r}
+library(ggsignif)
+IGRAM14$Diagnosis <- factor(IGRAM14$Diagnosis, levels=c("DST1", "PPD-A", "PPD-B", "PPD(B-A)"))
+ggplot(data=IGRAM14, aes(x=Diagnosis, y=M14, colour = VL))+ geom_jitter(position=position_jitterdodge(jitter.width = 0.17, dodge.width = 0.50), pch = 21) +
+stat_summary(fun=median, geom = "crossbar", position = position_dodge(width = 1.0), linewidth =0.20) +
+  labs(title = "b)",
+    x = "Diagnostic antigens",
+    y = "Delta_OD450nm",
+    colour = "Visible lesion") +
+  scale_x_discrete(labels = c("DST1" = "DIVA",
+                              "PPD-A" = "PPD-A",
+                              "SIT" = "PPD-B",
+                              "CCT" = "PPD (B-A)")) +
+  #geom_hline(yintercept=2.0, linetype="dashed", color = "blue",linewidth =0.4) +
+  geom_hline(yintercept=0.1, linetype="dashed", color = "red",linewidth =0.6) +
+ scale_y_continuous(expand = c(0,0)) +
+ expand_limits(y=c(-1.8,6.8)) +
+ scale_y_continuous(breaks=seq(0.0, 6.0, 1.0)) + 
+ theme(text = element_text(size = 28, face = "bold")) +
+ #scale_y_continuous(limits=c(-2.0, 5.50), breaks=seq(-2.0, 5.50, 1.0)) +
+  theme(text = element_text(size = 18, face = "bold")) + 
+  geom_signif(y_position = c(6.5,6.5,6.5,6.5), xmin = c(0.7, 1.7,2.7,3.7), xmax = c(1.3, 2.3, 3.3, 4.3), annotation = c("**", "ns", "*","***" ),  tip_length = 0.01, color="black", size = 0.7) + 
+  geom_signif(y_position = c(-0.8, -1.4,-1.9), xmin = c(0.9,0.9,0.9), 
+  xmax = c(1.9,2.9,3.9), annotation = c("****", "****", "ns"),
+  tip_length = 0.001, color="#FF6666", size = 0.7) + 
+  geom_signif(y_position = c(3.5, 4.8,5.5), xmin = c(1.1,1.1,1.1), 
+  xmax = c(2.1,3.1, 4.1), annotation = c("***","****","****"),
+  tip_length = 0.01, color="#00CCCC", size = 0.7) + theme_light() 
+
+ggsave(file = "IGRA M14 PostBCG All C and V.tiff", units="in", width=4.0, height=3.5, dpi=1200)
+```
+
+The code below extracts post-BCG, but pre-exposure  tuberculin IGRA test immune response to compare vaccinate and controls 
+
+```{r}
+
+
+DST1M2 <- IGRAM2 %>% 
+  filter(Diagnosis=="DST1")
+
+PPD_BAM2 <- IGRAM2 %>% 
+  filter(Diagnosis=="PPD(B-A)")
+
+PPD_B_M2 <- IGRAM2 %>% 
+  filter(Diagnosis=="PPD-B")
+
+PPD_AM2 <- IGRAM2 %>% 
+  filter(Diagnosis=="PPD-A")
+
+```
+
+IGRA test response to DIVA IGRA in vaccinate Vs Unvaccinated controls
+
+```{r}
+library(report)
+wilc_test <- wilcox.test(DST1M2$M2 ~ DST1M2$Treatment) 
+report(wilc_test)
+
+```
+
+IGRA test response to avian tuberculin in vaccinate Vs Unvaccinated controls
+
+```{r}
+wilc_test <- wilcox.test(PPD_AM2$M2 ~ PPD_AM2$Treatment) 
+report(wilc_test)
+```
+
+
+IGRA test response to bovine tuberculin in vaccinate Vs Unvaccinated control
+
+```{r}
+wilc_test <- wilcox.test(PPD_B_M2$M2 ~ PPD_B_M2$Treatment) 
+report(wilc_test)
+```
+
+IGRA test response to bovine minus avian tuberculin in vaccinate Vs Unvaccinated control
+
+```{r}
+wilc_test <- wilcox.test(PPD_BAM2$M2 ~ PPD_BAM2$Treatment) 
+report(wilc_test)
+
+```
+
+
+The code below extracts post-BCG, but pre-exposure tuberculin skin test response to compare skin test immune response between vaccinate and controls using the Wilcoxon rank sum (Mann‒Whitney U) test
+
+```{r}
+
+CCTM2 <- PostexposureTSTM2 %>% 
+  filter(Diagnosis=="CCT")
+
+SITM2 <- PostexposureTSTM2 %>% 
+  filter(Diagnosis=="SIT")
+
+PPD_AM2 <- PostexposureTSTM2 %>% 
+  filter(Diagnosis=="PPD-A")
+```
+
+The Wilcox rank sum test comparing vaccinate and controls skin test response to avian tuberculin
+
+```{r}
+library(report)
+wilc_test <- wilcox.test(PPD_AM2$M2 ~ PPD_AM2$Treatment) 
+report(wilc_test)
+```
+
+The Wilcox rank sum test comparing vaccinate and controls skin test response to bovine tuberculin
+
+```{r}
+wilc_test <- wilcox.test(SITM2$M2 ~ SITM2$Treatment) 
+report(wilc_test)
+```
+
+The Wilcox rank sum test comparing vaccinate and controls skin test response to bovine minus avian tuberculin (CCT) 
+
+```{r}
+wilc_test <- wilcox.test(CCTM2$M2 ~ CCTM2$Treatment) 
+report(wilc_test)
+
+```
+
+
+Extarcting the 12th month post-exposure (14th month post-BCG) skin test response to compare animals with lesions and without lesions
+
+```{r}
+DST10 <- TSTM14 %>% 
+  filter(Diagnosis=="DST10")
+
+CCT <- TSTM14 %>% 
+  filter(Diagnosis=="CCT")
+
+SIT <- TSTM14 %>% 
+  filter(Diagnosis=="SIT")
+
+PPD_A <- TSTM14 %>% 
+  filter(Diagnosis=="PPD-A")
+
+```
+
+The 12th month post-exposure (14th month post-BCG) skin test response to DIVA antigens between animals with lesions and without lesions
+
+```{r}
+library(report)
+wilc_test <- wilcox.test(DST10$M14 ~ DST10$VL) 
+report(wilc_test)
+
+
+```
+The 12th month post-exposure (14th month post-BCG) skin test response to avian tuberculin antigen between animals with lesions and without lesions
+
+```{r}
+wilc_test <- wilcox.test(PPD_A$M14 ~ PPD_A$VL) 
+report(wilc_test)
+```
+
+The 12th month post-exposure (14th month post-BCG) skin test response to bovine tuberculin antigen between animals with lesions and without lesions
+
+```{r}
+wilc_test <- wilcox.test(SIT$M14 ~ SIT$VL) 
+report(wilc_test)
+```
+
+The 12th month post-exposure (14th month post-BCG) skin test response to bovine minus avian tuberculin (CCT) between animals with lesions and without lesions
+
+```{r}
+wilc_test <- wilcox.test(CCT$M14 ~ CCT$VL) 
+report(wilc_test)
+
+```
+
+The 12th month post-exposure (14th month post-BCG) skin test response to avian tuberculin (CCT) between animals with lesions and without lesions
+
+```{r}
+library(ggstatsplot)
+ggbetweenstats(
+  data = PPD_A,
+  x    = VL, 
+  y    = M14, 
+  type = "nonparametric")
+
+```
+
+The 12th month post-exposure (14th month post-BCG) skin test response to bovine minus avian tuberculin (CCT) between animals with lesions and without lesions
+
+```{r}
+ggbetweenstats(
+  data = CCT,
+  x    = VL, 
+  y    = M14, 
+  type = "nonparametric")
+```
+
+Extracting the 12th month post-exposure (14th month post-BCG) IGRA test response 
+```{r}
+DST1 <- IGRAM14 %>% 
+  filter(Diagnosis=="DST1")
+
+PPD_BA <- IGRAM14 %>% 
+  filter(Diagnosis=="PPD(B-A)")
+
+PPD_B <- IGRAM14 %>% 
+  filter(Diagnosis=="PPD-B")
+
+PPD_A_IGRA <- IGRAM14 %>% 
+  filter(Diagnosis=="PPD-A")
+```
+
+The 12th month post-exposure (14th month post-BCG) IGRA test response to DIVA between animals with lesions and without lesions
+
+```{r}
+library(report)
+wilc_test <- wilcox.test(DST1$M14 ~ DST1$VL) 
+report(wilc_test)
+
+
+```
+The 12th month post-exposure (14th month post-BCG) IGRA test response to avian tuberculin IGRA between animals with lesions and without lesions
+
+```{r}
+wilc_test <- wilcox.test(PPD_A_IGRA$M14 ~ PPD_A_IGRA$VL) 
+report(wilc_test)
+```
+
+The 12th month post-exposure (14th month post-BCG) IGRA test response to bovine tuberculin IGRA between animals with lesions and without lesions
+```{r}
+wilc_test <- wilcox.test(PPD_B$M14 ~ PPD_B$VL) 
+report(wilc_test)
+```
+
+The 12th month post-exposure (14th month post-BCG) IGRA test response to bovine minus avian tuberculin IGRA between animals with lesions and without lesions
+
+```{r}
+wilc_test <- wilcox.test(PPD_BA$M14 ~ PPD_BA$VL) 
+report(wilc_test)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

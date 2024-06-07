@@ -1,0 +1,341 @@
+---
+title: "FinalAnalysisTrial"
+author: "Abebe F"
+date: "2023-11-28"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(scales)
+library(compare)
+library(broom)
+
+```
+
+
+
+```{r}
+DIVA_IGRA_Trajectory <-read.csv('DST1Trajectory4RAanalysis.csv', stringsAsFactors = FALSE)
+names(DIVA_IGRA_Trajectory)
+```
+
+DST1 IGRA all Time Point dataset with Delta_OD450nm!="NA"
+
+```{r}
+DIVA_IGRA_Trajectory <- DIVA_IGRA_Trajectory %>% 
+  filter(Delta_OD450nm!="NA")
+DIVA_IGRA_Trajectory
+```
+
+```{r}
+DSTdat <- DIVA_IGRA_Trajectory 
+ggplot(data=DSTdat, aes(x=Months_Post_Exposure, 
+                        y=Delta_OD450nm,
+                        colour=Rx_VL_Status,
+                        fill=Rx_VL_Status,
+                        group=as.factor(ID_Uniq))) + 
+  geom_point() + 
+  geom_hline(yintercept=0.1, linetype="dashed", color = "red") + 
+  scale_y_continuous(limits=c(-2, 5), breaks=seq(-2, 5, 1)) + 
+  scale_x_continuous(limits=c(0, 12), breaks=seq(0, 12, 2)) +
+  theme(text = element_text(size = 18, face = "bold")) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun.data = mean_se,alpha=0.5,
+      linewidth=0.5, col=hue_pal()(4)[2]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[2]) +
+    stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[4]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[4]) +
+  labs(title = "DIVA IGRA",
+      x = "Months Postexposure",
+      y = "Delta OD450nm") +
+  theme_gray() 
+  
+ 
+
+ggsave("DIVA IGRA Trajectory by VL and Rx.tiff", units="in", width=4.5, height=3, dpi=1200)
+```
+
+Bovine minus Avian Tuberculin IGRA
+
+
+```{r}
+B_minus_A_IGRA_Trajectory <-read.csv('PPD_(B-A)Trajectory4RAanalysis.csv', stringsAsFactors = FALSE)
+names(B_minus_A_IGRA_Trajectory)
+```
+
+ 
+```{r}
+B_minus_A_IGRA_Trajectory <- B_minus_A_IGRA_Trajectory %>% 
+  filter(Delta_OD450nm!="NA")
+B_minus_A_IGRA_Trajectory
+```
+
+
+
+```{r}
+DSTdat <- B_minus_A_IGRA_Trajectory 
+ggplot(data=DSTdat, aes(x=Months_Post_Exposure, 
+                        y=Delta_OD450nm,
+                        colour=Rx_VL_Status,
+                        fill=Rx_VL_Status,
+                        group=as.factor(ID_Uniq))) + 
+  geom_point() + 
+  geom_hline(yintercept=0.1, linetype="dashed", color = "red") + 
+  scale_y_continuous(limits=c(-2, 5), breaks=seq(-2, 5, 1)) + 
+  scale_x_continuous(limits=c(0, 12), breaks=seq(0, 12, 2)) +
+  theme(text = element_text(size = 18, face = "bold")) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun.data = mean_se,alpha=0.5,
+      linewidth=0.5, col=hue_pal()(4)[2]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[2]) +
+    stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[4]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[4]) +
+  labs(title = "PPD (B-A)",
+    x = "Months Postexposure",
+    y = "Delta OD450nm") +
+  theme_gray() 
+  
+ 
+
+ggsave("B minus A IGRA Trajectory by VL and Rx.tiff", units="in", width=4.5, height=3, dpi=1200)
+```
+
+```{r}
+Bovine_Tuberculin_IGRA_Trajectory <-read.csv('PPDB_IGRA_Trajectory4RAanalysis.csv', stringsAsFactors = FALSE)
+names(Bovine_Tuberculin_IGRA_Trajectory)
+```
+
+```{r}
+Bovine_Tuberculin_IGRA_Trajectory <- Bovine_Tuberculin_IGRA_Trajectory %>% 
+  filter(Delta_OD450nm!="NA")
+Bovine_Tuberculin_IGRA_Trajectory
+```
+
+```{r}
+DSTdat <- Bovine_Tuberculin_IGRA_Trajectory 
+ggplot(data=DSTdat, aes(x=Months_Post_Exposure, 
+                        y=Delta_OD450nm,
+                        colour=Rx_VL_Status,
+                        fill=Rx_VL_Status,
+                        group=as.factor(ID_Uniq))) + 
+  geom_point() + 
+  geom_hline(yintercept=0.1, linetype="dashed", color = "red") + 
+  scale_y_continuous(limits=c(-2, 5), breaks=seq(-2, 5, 1)) + 
+  scale_x_continuous(limits=c(0, 12), breaks=seq(0, 12, 2)) +
+  theme(text = element_text(size = 18, face = "bold")) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun.data = mean_se,alpha=0.5,
+      linewidth=0.5, col=hue_pal()(4)[2]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[2]) +
+    stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[4]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Delta_OD450nm,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[4]) +
+  labs(title = "PPD-B",
+    x = "Months Postexposure",
+    y = "Delta OD450nm") +
+  theme_gray() 
+  
+
+ggsave("Bovine tuberculin IGRA Trajectory by VL and Rx.tiff", units="in", width=4.5, height=3, dpi=1200)
+```
+
+
+
+DIVA Skin Trajectory analysis
+
+
+```{r}
+DIVA_Skin_Trajectory <-read.csv('DST10Trajectory4RAanalysis.csv', stringsAsFactors = FALSE)
+names(DIVA_Skin_Trajectory)
+```
+
+```{r}
+DIVA_Skin_Trajectory <- DIVA_Skin_Trajectory %>% 
+  filter(Skin_Thickness!="NA")
+DIVA_Skin_Trajectory
+```
+
+
+```{r}
+DSTdat <- DIVA_Skin_Trajectory 
+ggplot(data=DSTdat, aes(x=Months_Post_Exposure, 
+                        y=Skin_Thickness,
+                        colour=Rx_VL_Status,
+                        fill=Rx_VL_Status,
+                        group=as.factor(ID_Uniq))) + 
+  geom_point() + 
+  geom_hline(yintercept=0.1, linetype="dashed", color = "red") + 
+  scale_y_continuous(limits=c(-12, 52), breaks=seq(-12, 52, 8)) + 
+  scale_x_continuous(limits=c(0, 12), breaks=seq(0, 12, 4)) +
+  theme(text = element_text(size = 18, face = "bold")) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun.data = mean_se,alpha=0.5,
+      linewidth=0.5, col=hue_pal()(4)[2]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[2]) +
+    stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[4]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[4]) +
+  labs(title = "DIVA Skin",
+    x = "Months Postexposure",
+       y = "Skin Thickness") +
+  theme_gray() 
+  
+ 
+ggsave("DIVA Skin Trajectory by VL and Rx.tiff", units="in", width=4, height=3, dpi=1200)
+
+```
+
+
+
+CCT Immune Trajectory
+
+
+```{r}
+CCT_Skin_Trajectory <-read.csv('SICCT_Trajectory4RAanalysis.csv', stringsAsFactors = FALSE)
+names(CCT_Skin_Trajectory)
+
+```
+
+```{r}
+CCT_Skin_Trajectory <- CCT_Skin_Trajectory %>% 
+  filter(Skin_Thickness!="NA")
+CCT_Skin_Trajectory
+```
+
+
+```{r}
+DSTdat <- CCT_Skin_Trajectory 
+ggplot(data=DSTdat, aes(x=Months_Post_Exposure, 
+                        y=Skin_Thickness,
+                        colour=Rx_VL_Status,
+                        fill=Rx_VL_Status,
+                        group=as.factor(ID_Uniq))) + 
+  geom_point() + 
+  geom_hline(yintercept=0.1, linetype="dashed", color = "red") + 
+  scale_y_continuous(limits=c(-12, 52), breaks=seq(-12, 52, 8)) + 
+  scale_x_continuous(limits=c(0, 12), breaks=seq(0, 12, 4)) +
+  theme(text = element_text(size = 18, face = "bold")) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun.data = mean_se,alpha=0.5,
+      linewidth=0.5, col=hue_pal()(4)[2]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[2]) +
+    stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[4]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[4]) +
+  labs(title = "CCT",
+    x = "Months Postexposure",
+       y = "Skin Thickness") +
+  theme_gray() 
+  
+ 
+
+ggsave("CCT Skin Trajectory by VL and Rx.tiff", units="in", width=4, height=3, dpi=1200)
+```
+
+
+```{r}
+SIT_Skin_Trajectory <-read.csv('SIT_Trajectory4RAanalysis.csv', stringsAsFactors = FALSE)
+names(SIT_Skin_Trajectory)
+
+```
+
+```{r}
+SIT_Skin_Trajectory <- SIT_Skin_Trajectory %>% 
+  filter(Skin_Thickness!="NA")
+SIT_Skin_Trajectory
+```
+
+
+```{r}
+DSTdat <- SIT_Skin_Trajectory 
+ggplot(data=DSTdat, aes(x=Months_Post_Exposure, 
+                        y=Skin_Thickness,
+                        colour=Rx_VL_Status,
+                        fill=Rx_VL_Status,
+                        group=as.factor(ID_Uniq))) + 
+  geom_point() + 
+  geom_hline(yintercept=0.1, linetype="dashed", color = "red") + 
+  scale_y_continuous(limits=c(-12, 52), breaks=seq(-12, 52, 8)) + 
+  scale_x_continuous(limits=c(0, 12), breaks=seq(0, 12, 4)) +
+  theme(text = element_text(size = 18, face = "bold")) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[1]) + 
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun.data = mean_se,alpha=0.5,
+      linewidth=0.5, col=hue_pal()(4)[2]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Control_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[2]) +
+    stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Negative'),fun = mean, alpha=0.5, linewidth=0.5, col=hue_pal()(4)[3]) +
+  stat_summary(geom='ribbon', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun.data = mean_se,alpha=0.5, linewidth=0.5, col=hue_pal()(4)[4]) +
+  stat_summary(geom='line', aes(x=Months_Post_Exposure,y=Skin_Thickness,colour=NULL,group=NULL),
+               data=DSTdat %>% filter(Rx_VL_Status=='Vaccinate_Positive'),fun = mean,alpha=0.5,linewidth=0.5, col=hue_pal()(4)[4]) +
+  labs(title = "SIT",
+    x = "Months Postexposure",
+       y = "Skin Thickness") +
+  theme_gray() 
+  
+ 
+
+ggsave("SIT Skin Trajectory by VL and Rx.tiff", units="in", width=4, height=3, dpi=1200)
+```

@@ -1,0 +1,190 @@
+---
+title: "Correlation between AGs"
+author: "Abebe F"
+date: "2023-07-27"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(ggstatsplot)
+```
+
+```{r}
+AllAGs4Cor <-read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
+names(AllAGs4Cor)
+
+```
+
+
+```{r}
+SICCTVsDST10M14 <- read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
+
+SICCTvsDST10 <- SICCTVsDST10M14 %>% 
+  select(Treatment, DST10M14, SICCT_M14, Treatment_VL)
+SICCTvsDST10
+```
+#############
+A) Correlation plots
+
+```{r}
+SICCTvsDST10$Treatment_VL <- factor(SICCTvsDST10$Treatment_VL, levels=c("Control_Positive",   "Control_Negative", "Vaccinate_Positive", "Vaccinate_Negative" ))
+
+ggscatterstats( data = SICCTvsDST10,
+                x=SICCT_M14,
+                y= DST10M14,
+                type = "np",
+                results.subtitle = FALSE,
+                marginal = FALSE
+  ) +
+  aes(color=Treatment_VL) +
+  #geom_point(aes(color=Treatment)) +
+  #theme_few() + ggtitle("theme_few()") +
+  geom_hline(yintercept=2, color="red", linetype ="dashed", linewidth=0.5) +
+geom_vline(xintercept=4, color="blue", linetype ="dashed", linewidth=0.5) +
+  #geom_vline(xintercept=1, color="blue", linetype ="dashed", linewidth=0.9) +
+  #scale_fill_brewer(palette = "Set3") 
+  #scale_fill_brewer(palette = "Dark2")
+  #scale_colour_brewer(palette = "PiYG")
+  #scale_color_brewer(palette = "Set2")
+  scale_color_manual(values = c("#CC0066", "#00FF00",  "#0000CC", "#00FFFF" )) +
+scale_x_continuous(name="CCT Skin thicknes change (∆mm)", limits=c(-8, 42), breaks=seq(-4, 44, 8)) +
+  scale_y_continuous(name="DIVA Skin thicknes change (∆mm)", limits=c(-2, 16), breaks=seq(-2, 16, 4)) +
+ labs(title = "a)", x = "CCT Skin thicknes change (∆mm)", y = "DIVA Skin thicknes change (∆mm)", color= "Treatment_Visible Lesion") +
+
+theme_bw() 
+
+ggsave(file ="CCT and DIVA Cor by Rx_VL.tiff", units="in", width=5.6, height=4, dpi=1200)
+```
+
+B) Correlation plot
+
+
+```{r}
+SITVsDST10_14 <- read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
+
+SITVsDST10_14 <- SITVsDST10_14 %>% 
+  select(Treatment, DST10M14, SIT_M14, Treatment_VL)
+SITVsDST10_14
+```
+
+
+```{r}
+SITVsDST10_14$Treatment_VL <- factor(SITVsDST10_14$Treatment_VL, levels=c("Control_Positive",   "Control_Negative", "Vaccinate_Positive", "Vaccinate_Negative" ))
+ggscatterstats( data = SITVsDST10_14,
+                x=SIT_M14,
+                y= DST10M14,
+                type = "np",
+                results.subtitle = FALSE,
+                marginal = FALSE
+  ) +
+  aes(color=Treatment_VL) +
+  #geom_point(aes(color=Treatment)) +
+  #theme_few() + ggtitle("theme_few()") +
+  geom_hline(yintercept=2.0, color="red", linetype ="dashed", linewidth=0.5) +
+geom_vline(xintercept=4.0, color="blue", linetype ="dashed", linewidth=0.5) +
+  #geom_vline(xintercept=1, color="blue", linetype ="dashed", linewidth=0.9) +
+  #scale_fill_brewer(palette = "Set3") 
+  #scale_fill_brewer(palette = "Dark2")
+  #scale_colour_brewer(palette = "PiYG")
+  #scale_color_brewer(palette = "Set2")
+  scale_color_manual(values = c( "#DC143C",  "#00FF00",  "#00008B", "#00CED1"  )) +
+scale_x_continuous(name="SIT Skin thicknes change (∆mm)", limits=c(-2, 42), breaks=seq(0, 42, 8)) +
+  scale_y_continuous(name="DIVA Skin thicknes change (∆mm)", limits=c(-2, 16), breaks=seq(-2, 16, 4)) +
+ labs(title = "b)", x = "SIT Skin thicknes change (∆mm)", y = "DIVA Skin thicknes change (∆mm)", color= "Treatment_Visible Lesion") +
+
+theme_bw() 
+
+ggsave(file ="DIVA vs SIT Cor by Rx_VL.tiff", units="in", width=5.6, height=4.0, dpi=1200) 
+```
+
+
+
+
+###################
+C) Correlation plot 
+```{r}
+PPD_BAVsDST1_14 <- read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
+
+PPD_BAVsDST1_14 <- PPD_BAVsDST1_14 %>% 
+  select(Treatment, DST1M14, PPD_BA_M14, Treatment_VL)
+PPD_BAVsDST1_14
+```
+
+
+```{r}
+PPD_BAVsDST1_14$Treatment_VL <- factor(PPD_BAVsDST1_14$Treatment_VL, levels=c("Control_Positive",   "Control_Negative", "Vaccinate_Positive", "Vaccinate_Negative" ))
+ggscatterstats( data = PPD_BAVsDST1_14,
+                x=PPD_BA_M14,
+                y= DST1M14,
+                type = "np",
+                results.subtitle = FALSE,
+                marginal = FALSE
+  ) +
+  aes(color=Treatment_VL) +
+  #geom_point(aes(color=Treatment)) +
+  #theme_few() + ggtitle("theme_few()") +
+  geom_hline(yintercept=0.1, color="red", linetype ="dashed", linewidth=0.5) +
+geom_vline(xintercept=0.1, color="blue", linetype ="dashed", linewidth=0.5) +
+  #geom_vline(xintercept=1, color="blue", linetype ="dashed", linewidth=0.9) +
+  #scale_fill_brewer(palette = "Set3") 
+  #scale_fill_brewer(palette = "Dark2")
+  #scale_colour_brewer(palette = "PiYG")
+  #scale_color_brewer(palette = "Set2")
+  scale_color_manual(values = c( "#DC143C",  "#00FF00",  "#00008B", "#00CED1"  )) +
+scale_x_continuous(name="PPD (B-A) IGRA Delta_OD450nm", limits=c(-1, 3.5), breaks=seq(-1, 3, 1)) +
+  scale_y_continuous(name="DIVA IGRA Delta_OD450nm", limits=c(-0.5, 4.5), breaks=seq(0, 4, 1)) +
+ labs(title = "c)", x = "PPD (B-A) IGRA Delta_OD450nm", y = "DIVA IGRA Delta_OD450nm", color= "Treatment_Visible Lesion") +
+
+theme_bw() 
+
+ggsave(file ="DIVA vs PPD(B-A) IGRA cor by Rx_VL.tiff", units="in", width=5.6, height=4.0, dpi=1200) 
+```
+
+
+D) Correlation plot
+
+
+```{r}
+PPD_B_VsDST1_14 <- read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
+
+PPD_B_VsDST1_14 <- PPD_B_VsDST1_14 %>% 
+  select(Treatment, DST1M14, PPDB_M14, Treatment_VL)
+PPD_B_VsDST1_14
+```
+
+```{r}
+PPD_B_VsDST1_14$Treatment_VL <- factor(PPD_B_VsDST1_14$Treatment_VL, levels=c("Control_Positive",   "Control_Negative", "Vaccinate_Positive", "Vaccinate_Negative" ))
+ggscatterstats( data = PPD_B_VsDST1_14,
+                x=PPDB_M14,
+                y= DST1M14,
+                type = "np",
+                results.subtitle = FALSE,
+                marginal = FALSE
+  ) +
+  aes(color=Treatment_VL) +
+  #geom_point(aes(color=Treatment)) +
+  #theme_few() + ggtitle("theme_few()") +
+  geom_hline(yintercept=0.1, color="red", linetype ="dashed", linewidth=0.5) +
+geom_vline(xintercept=0.1, color="blue", linetype ="dashed", linewidth=0.5) +
+  #geom_vline(xintercept=1, color="blue", linetype ="dashed", linewidth=0.9) +
+  #scale_fill_brewer(palette = "Set3") 
+  #scale_fill_brewer(palette = "Dark2")
+  #scale_colour_brewer(palette = "PiYG")
+  #scale_color_brewer(palette = "Set2")
+  scale_color_manual(values = c( "#DC143C",  "#00FF00",  "#00008B", "#00CED1"  )) +
+scale_x_continuous(name="PPD-B IGRA Delta_OD450nm", limits=c(-0.2, 4.2), breaks=seq(0, 4, 1)) +
+  scale_y_continuous(name="DIVA IGRA Delta_OD450nm", limits=c(-0.5, 4.5), breaks=seq(0, 4, 1)) +
+ labs(title = "d)", x = "PPD-B IGRA Delta_OD450nm", y = "DIVA IGRA Delta_OD450nm", color= "Treatment_Visible Lesion") +
+
+theme_bw() 
+
+ggsave(file ="DIVA vs PPD-B by Rx_VL.tiff", units="in", width=5.6, height=4.0, dpi=1200)
+```
+
+
+
+
+
