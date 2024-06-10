@@ -21,18 +21,18 @@ names(TST_AllAGs)
 
 Extracting data to make Fig. 1 a) post-BCG, pre-exposure skin test immune response
 ```{r}
-PostexposureTSTM2 <-  TST_AllAGs %>% 
+TSTM2 <-  TST_AllAGs %>% 
   select(Treatment, Diagnosis, M2  ) %>% 
   filter(M2 != "NA")
-PostexposureTSTM2
+TSTM2
 ```
 
 Producing Fig. 1 a) post-BCG, pre-exposure skin test immune response
 
 ```{r}
 library(ggsignif)
-PostexposureTSTM2$Diagnosis <- factor(PostexposureTSTM2$Diagnosis, levels=c("DST10", "PPD-A", "SIT", "CCT"))
-ggplot(data=PostexposureTSTM2, aes(x=Diagnosis, y=M2, colour = Treatment))+ geom_jitter(position=position_jitterdodge(jitter.width = 0.17, dodge.width = 0.30), pch = 21) +
+TSTM2$Diagnosis <- factor(TSTM2$Diagnosis, levels=c("DST10", "PPD-A", "SIT", "CCT"))
+ggplot(data=TSTM2, aes(x=Diagnosis, y=M2, colour = Treatment))+ geom_jitter(position=position_jitterdodge(jitter.width = 0.17, dodge.width = 0.30), pch = 21) +
 stat_summary(fun=median, geom = "crossbar", position = position_dodge(width = 1.0), linewidth =0.20) +
   labs(title = "a)",
     x = "Diagnostic antigens",
@@ -154,6 +154,7 @@ IGRAM14 <- IGRA_AllAGs %>%
 IGRAM14
 ```
 
+
 ```{r}
 library(ggsignif)
 IGRAM14$Diagnosis <- factor(IGRAM14$Diagnosis, levels=c("DST1", "PPD-A", "PPD-B", "PPD(B-A)"))
@@ -242,13 +243,13 @@ The code below extracts post-BCG, but pre-exposure tuberculin skin test response
 
 ```{r}
 
-CCTM2 <- PostexposureTSTM2 %>% 
+CCTM2 <- TSTM2 %>% 
   filter(Diagnosis=="CCT")
 
-SITM2 <- PostexposureTSTM2 %>% 
+SITM2 <- TSTM2 %>% 
   filter(Diagnosis=="SIT")
 
-PPD_AM2 <- PostexposureTSTM2 %>% 
+PPD_AM2 <- TSTM2 %>% 
   filter(Diagnosis=="PPD-A")
 ```
 
@@ -279,7 +280,7 @@ report(wilc_test)
 Extarcting the 12th month post-exposure (14th month post-BCG) skin test response to compare animals with lesions and without lesions
 
 ```{r}
-DST10 <- TSTM14 %>% 
+DIVA_Skin <- TSTM14 %>% 
   filter(Diagnosis=="DST10")
 
 CCT <- TSTM14 %>% 
@@ -297,9 +298,8 @@ The 12th month post-exposure (14th month post-BCG) skin test response to DIVA an
 
 ```{r}
 library(report)
-wilc_test <- wilcox.test(DST10$M14 ~ DST10$VL) 
+wilc_test <- wilcox.test(DIVA_Skin$M14 ~ DIVA_Skin$VL) 
 report(wilc_test)
-
 
 ```
 The 12th month post-exposure (14th month post-BCG) skin test response to avian tuberculin antigen between animals with lesions and without lesions
@@ -324,7 +324,37 @@ report(wilc_test)
 
 ```
 
-The 12th month post-exposure (14th month post-BCG) skin test response to avian tuberculin (CCT) between animals with lesions and without lesions
+
+
+```{r}
+
+DIVA_skin_M2 <- TSTM2 %>% 
+  filter(Diagnosis=="DST10")
+
+CCTM2 <- TSTM2 %>% 
+  filter(Diagnosis=="CCT")
+
+SITM2 <- TSTM2 %>% 
+  filter(Diagnosis=="SIT")
+
+PPD_AM2 <- TSTM2 %>% 
+  filter(Diagnosis=="PPD-A")
+
+```
+
+
+```{r}
+AG_NVL_IGRA <- IGRA_M2_M14 %>% 
+  filter(VL=="No" )
+
+AG_VL_IGRA <- IGRA_M2_M14 %>% 
+  filter(VL=="Yes" )
+
+```
+
+
+
+Mann-Whitney U test comparing avian PPD response in animals with lesion and without lesion
 
 ```{r}
 library(ggstatsplot)
@@ -348,13 +378,13 @@ ggbetweenstats(
 
 Extracting the 12th month post-exposure (14th month post-BCG) IGRA test response 
 ```{r}
-DST1 <- IGRAM14 %>% 
+DIVA_IGRA <- IGRAM14 %>% 
   filter(Diagnosis=="DST1")
 
-PPD_BA <- IGRAM14 %>% 
+PPD_BA_IGRA <- IGRAM14 %>% 
   filter(Diagnosis=="PPD(B-A)")
 
-PPD_B <- IGRAM14 %>% 
+PPD_B_IGRA <- IGRAM14 %>% 
   filter(Diagnosis=="PPD-B")
 
 PPD_A_IGRA <- IGRAM14 %>% 
@@ -365,7 +395,7 @@ The 12th month post-exposure (14th month post-BCG) IGRA test response to DIVA be
 
 ```{r}
 library(report)
-wilc_test <- wilcox.test(DST1$M14 ~ DST1$VL) 
+wilc_test <- wilcox.test(DIVA_IGRA$M14 ~ DIVA_IGRA$VL) 
 report(wilc_test)
 
 
@@ -379,43 +409,275 @@ report(wilc_test)
 
 The 12th month post-exposure (14th month post-BCG) IGRA test response to bovine tuberculin IGRA between animals with lesions and without lesions
 ```{r}
-wilc_test <- wilcox.test(PPD_B$M14 ~ PPD_B$VL) 
+wilc_test <- wilcox.test(PPD_B_IGRA$M14 ~ PPD_B_IGRA$VL) 
 report(wilc_test)
 ```
 
 The 12th month post-exposure (14th month post-BCG) IGRA test response to bovine minus avian tuberculin IGRA between animals with lesions and without lesions
 
 ```{r}
-wilc_test <- wilcox.test(PPD_BA$M14 ~ PPD_BA$VL) 
+wilc_test <- wilcox.test(PPD_BA_IGRA$M14 ~ PPD_BA_IGRA$VL) 
 report(wilc_test)
+
+```
+Sub-setting the two month post-BCG skin test immune response to the vaccinate and control group to compare within group difference in skin test immune response to different antigens 
+
+```{r}
+TST_M2_Response_Vaccinates <- TSTM2 %>% 
+  filter(Treatment=="Vaccinate")
+
+TST_M2_Response_Controls <- TSTM2 %>% 
+  filter(Treatment=="Control")
+
+```
+
+Two month post-BCG skin test immune response within the vaccinate group
+
+```{r}
+ggwithinstats(
+  data = TST_M2_Response_Vaccinates,
+  x    = Diagnosis, 
+  y    = M2, 
+  type = "np",
+  p.adjust.method = "bonferroni"
+  )
+
+```
+
+
+Two month post-BCG skin test immune response within the control group
+
+```{r}
+ggwithinstats(
+  data = TST_M2_Response_Controls,
+  x    = Diagnosis, 
+  y    = M2, 
+  type = "np",
+  p.adjust.method = "bonferroni"
+  )
+
+```
+
+
+Sub-setting the two month post-BCG IGRA test immune response to the vaccinate and control group to compare within group difference in IGRA test immune response to different antigens 
+
+```{r}
+IGRA_M2_Response_Vaccinates <- IGRAM2 %>% 
+  filter(Treatment=="Vaccinate")
+
+IGRA_M2_Response_Controls <- IGRAM2 %>% 
+  filter(Treatment=="Control")
+
+```
+
+
+Two month post-BCG skin test immune response within the vaccinate group
+
+```{r}
+ggwithinstats(
+  data = IGRA_M2_Response_Vaccinates,
+  x    = Diagnosis, 
+  y    = M2, 
+  type = "np",
+  p.adjust.method = "bonferroni"
+  )
+
+```
+
+
+Two month post-BCG skin test immune response within the control group
+
+```{r}
+ggwithinstats(
+  data = IGRA_M2_Response_Controls,
+  x    = Diagnosis, 
+  y    = M2, 
+  type = "np",
+  p.adjust.method = "bonferroni"
+  )
+
+```
+
+Sub-setting the 14th month post-BCG (12th month postexposure) IGRA test immune response in animals with visible lesion and without visible lesions the within group difference in IGRA test immune response to different antigens 
+
+```{r}
+Visible_Lesion_IGRA <- IGRAM14 %>% 
+  filter(VL=="Yes" )
+
+Non_Visible_Lesion_IGRA <- IGRAM14 %>% 
+  filter(VL=="No" )
+
+```
+
+The 14th month post-BCG (12th month post-exposure) IGRA test immune response to the different antigens within the visible lesion group
+```{r}
+ggwithinstats(
+  data = Visible_Lesion_IGRA,
+  x    = Diagnosis, 
+  y    = M14, 
+  type = "nonparametric",
+  p.adjust.method = "bonferroni"
+)
+```
+
+The 14th month post-BCG (12th month post-exposure) IGRA test immune response to the different antigens within the non visible lesion group
+
+```{r}
+ggwithinstats(
+  data = Non_Visible_Lesion_IGRA,
+  x    = Diagnosis, 
+  y    = M14, 
+  type = "nonparametric",
+  p.adjust.method = "bonferroni"
+)
+```
+
+#################################
+Summary - magnitude of test responses and number test positive and negative
+
+```{r}
+TSTM2_M14 <- TST_AllAGs %>% 
+  select(Treatment, Diagnosis, M2, M14, D_M14, VL  ) %>% 
+  filter(M2 != "NA")
+TSTM2_M14
+```
+
+
+Summary statistics calculating the number of SIT test positive controls and vaccinates with and without visible lesions at the end of the exposure period and their skin test response at 2nd and 14th month post-BCG
+```{r}
+library(gtsummary)
+DST10M2_M14 <- TSTM2_M14 %>% 
+filter(Diagnosis =="SIT", M14!="NA")
+tbl_summary(DST10M2_M14, 
+            by = VL,
+            statistic    =    all_continuous() ~ "{mean} ({sd})",
+            digits = ~1,
+            type = list(M2 ~ "continuous2", M14 ~ "continuous")) %>% 
+  add_n() %>% 
+  add_ci() %>% 
+  add_difference() %>%  
+  add_overall()
+
+```
+
+Summary statistics calculating the number of CCT test positive controls and vaccinates with and without visible lesions at the end of the exposure period and their skin test response at 2nd and 14th month post-BCG
+
+
+```{r}
+library(gtsummary)
+CCTM2_M14 <- TSTM2_M14 %>% 
+filter(Diagnosis =="CCT", M14!="NA")
+tbl_summary(CCTM2_M14, 
+            by = VL,
+            statistic    =    all_continuous() ~ "{mean} ({sd})",
+            digits = ~1,
+            type = list(M2 ~ "continuous2", M14 ~ "continuous")
+            ) %>% 
+  add_n() %>% 
+  add_ci() %>% 
+  add_difference() %>% 
+  add_overall()
+```
+
+
+
+Summary statistics calculating the number of DIVA skin test positive controls and vaccinates with and without visible lesions at the end of the exposure period and their skin test response at 2nd and 14th month post-BCG
+
+
+```{r}
+library(gtsummary)
+CCTM2_M14 <- TSTM2_M14 %>% 
+filter(Diagnosis =="DST10", M14!="NA")
+tbl_summary(CCTM2_M14, 
+            by = VL,
+            statistic    =    all_continuous() ~ "{mean} ({sd})",
+            digits = ~1,
+            type = list(M2 ~ "continuous2", M14 ~ "continuous")
+            ) %>% 
+  add_n() %>% 
+  add_ci() %>% 
+  add_difference() %>% 
+  add_overall()
+```
+
+
+
+```{r}
+IGRA_M2_M14 <- IGRA_AllAGs %>% 
+  select(Treatment, Diagnosis, M2, M14, D_M14, VL  ) %>% 
+  filter(M2 != "NA")
+IGRA_M2_M14
+```
+
+
+```{r}
+library(gtsummary)
+DST1_IGRAM2_M14 <- IGRA_M2_M14 %>% 
+  filter(Diagnosis =="DST1", M14!="NA")
+tbl_summary(DST1_IGRAM2_M14, 
+            by = VL,
+            statistic    =    all_continuous() ~ "{mean} ({sd})",
+            digits = ~1,
+            type = list(M2 ~ "continuous2", M14 ~ "continuous")
+            ) %>% 
+  add_n() %>% 
+  add_ci() %>% 
+  add_difference() %>% 
+  add_overall()
+```
+
+
+```{r}
+library(gtsummary)
+DST1_IGRAM2_M14 <- IGRA_M2_M14 %>% 
+  filter(Diagnosis =="PPD(B-A)", M14!="NA")
+tbl_summary(DST1_IGRAM2_M14, 
+            by = VL,
+            statistic    =    all_continuous() ~ "{mean} ({sd})",
+            digits = ~1,
+            type = list(M2 ~ "continuous2", M14 ~ "continuous")
+            ) %>% 
+  add_n() %>% 
+  add_ci() %>% 
+  add_difference() %>% 
+  add_overall()
+```
+
+
+```{r}
+library(gtsummary)
+DST1_IGRAM2_M14 <- IGRA_M2_M14 %>% 
+  filter(Diagnosis =="PPD-B", M14!="NA")
+tbl_summary(DST1_IGRAM2_M14, 
+            by = VL,
+            statistic    =    all_continuous() ~ "{mean} ({sd})",
+            digits = ~1,
+            type = list(M2 ~ "continuous2", M14 ~ "continuous")
+            ) %>% 
+  add_n() %>% 
+  add_ci() %>% 
+  add_difference() %>% 
+  add_overall()
+```
+
+
+
+```{r}
+TSTM14CVL <- TST_AllAGs %>% 
+  select(Treatment, Diagnosis, M14, Culture_PCR_Or_VL) %>% 
+ filter(M14!="NA")
+TSTM14CVL
 
 ```
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```{r}
+IGRAM14CVL <- IGRA_AllAGs %>% 
+  select(Treatment, Diagnosis, M14, Culture_PCR_Or_VL) %>% 
+ filter(M14!="NA")
+IGRAM14CVL
+```
 
 
 
