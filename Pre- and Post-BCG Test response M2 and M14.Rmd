@@ -343,17 +343,6 @@ PPD_AM2 <- TSTM2 %>%
 ```
 
 
-```{r}
-AG_NVL_IGRA <- IGRA_M2_M14 %>% 
-  filter(VL=="No" )
-
-AG_VL_IGRA <- IGRA_M2_M14 %>% 
-  filter(VL=="Yes" )
-
-```
-
-
-
 Mann-Whitney U test comparing avian PPD response in animals with lesion and without lesion
 
 ```{r}
@@ -659,32 +648,6 @@ tbl_summary(DST1_IGRAM2_M14,
   add_difference() %>% 
   add_overall()
 ```
-
-
-
-```{r}
-TSTM14CVL <- TST_AllAGs %>% 
-  select(Treatment, Diagnosis, M14, Culture_PCR_Or_VL) %>% 
- filter(M14!="NA")
-TSTM14CVL
-
-```
-
-
-
-```{r}
-IGRAM14CVL <- IGRA_AllAGs %>% 
-  select(Treatment, Diagnosis, M14, Culture_PCR_Or_VL) %>% 
- filter(M14!="NA")
-IGRAM14CVL
-```
-
-
-
-
-
-
-
 
 
 
