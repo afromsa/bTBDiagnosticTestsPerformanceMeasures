@@ -11,13 +11,13 @@ library(dplyr)
 library(ggplot2)
 library(ggstatsplot)
 ```
-
+# Import the data
 ```{r}
 AllAGs4Cor <-read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
 names(AllAGs4Cor)
 
 ```
-
+# Figure 3 A) Correlation plots
 
 ```{r}
 SICCTVsDST10M14 <- read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
@@ -26,8 +26,7 @@ SICCTvsDST10 <- SICCTVsDST10M14 %>%
   select(Treatment, DST10M14, SICCT_M14, Treatment_VL)
 SICCTvsDST10
 ```
-#############
-A) Correlation plots
+
 
 ```{r}
 SICCTvsDST10$Treatment_VL <- factor(SICCTvsDST10$Treatment_VL, levels=c("Control_Positive",   "Control_Negative", "Vaccinate_Positive", "Vaccinate_Negative" ))
@@ -59,7 +58,7 @@ theme_bw()
 ggsave(file ="CCT and DIVA Cor by Rx_VL.tiff", units="in", width=5.6, height=4, dpi=1200)
 ```
 
-B) Correlation plot
+# Figure 3 B) Correlation plot
 
 
 ```{r}
@@ -101,10 +100,7 @@ ggsave(file ="DIVA vs SIT Cor by Rx_VL.tiff", units="in", width=5.6, height=4.0,
 ```
 
 
-
-
-###################
-C) Correlation plot 
+# Figure 3 C) Correlation plot 
 ```{r}
 PPD_BAVsDST1_14 <- read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
 
@@ -144,7 +140,7 @@ ggsave(file ="DIVA vs PPD(B-A) IGRA cor by Rx_VL.tiff", units="in", width=5.6, h
 ```
 
 
-D) Correlation plot
+# Figure 3 D) Correlation plot
 
 
 ```{r}
@@ -184,7 +180,87 @@ theme_bw()
 ggsave(file ="DIVA vs PPD-B by Rx_VL.tiff", units="in", width=5.6, height=4.0, dpi=1200)
 ```
 
+#correlation between DIVA skin and DIVA IFN-γ test responses 
 
+```{r}
+DST10_VsDST1_14 <- read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
+
+DST10_VsDST1_14 <- DST10_VsDST1_14 %>% 
+  select(Treatment, DST10M14, DST1M14, Treatment_VL)
+DST10_VsDST1_14
+```
+
+
+
+```{r}
+DST10_VsDST1_14$Treatment_VL <- factor(DST10_VsDST1_14$Treatment_VL, levels=c("Control_Positive",   "Control_Negative", "Vaccinate_Positive", "Vaccinate_Negative" ))
+ggscatterstats( data = DST10_VsDST1_14,
+                x=DST10M14 ,
+                y= DST1M14,
+                type = "np",
+                results.subtitle = TRUE,
+                marginal = FALSE
+  ) +
+  aes(color=Treatment_VL) +
+  #geom_point(aes(color=Treatment)) +
+  #theme_few() + ggtitle("theme_few()") +
+  geom_hline(yintercept=0.1, color="red", linetype ="dashed", linewidth=0.5) +
+geom_vline(xintercept=2.0, color="blue", linetype ="dashed", linewidth=0.5) +
+  #geom_vline(xintercept=1, color="blue", linetype ="dashed", linewidth=0.9) +
+  #scale_fill_brewer(palette = "Set3") 
+  #scale_fill_brewer(palette = "Dark2")
+  #scale_colour_brewer(palette = "PiYG")
+  #scale_color_brewer(palette = "Set2")
+  scale_color_manual(values = c( "#DC143C",  "#00FF00",  "#00008B", "#00CED1"  )) +
+scale_x_continuous(name="DIVA Skin thicknes change (∆mm)", limits=c(-2, 14), breaks=seq(-2, 14, 4)) +
+  scale_y_continuous(name="DIVA IGRA Delta_OD450nm", limits=c(-1, 5), breaks=seq(-1, 5, 1))  +
+ labs(title = "A", x = "DIVA Skin thicknes change (∆mm)", y = "DIVA IGRA Delta_OD450nm", color= "Treatment_Visible Lesion") +
+
+theme_bw() 
+
+ggsave(file ="Suuplementary Figure 2A DIVA Skin vs DIVA IGRA by Rx_VL.tiff", units="in", width=5.6, height=4.0, dpi=1200)
+```
+
+#Correlation between CCT skin and PPD (B-A) IGRA Test
+
+```{r}
+CCT_VsPPD_BA_14 <- read.csv('AllAGsAllAnimals4cortest.csv', stringsAsFactors = FALSE)
+
+CCT_VsPPD_BA_14 <- CCT_VsPPD_BA_14 %>% 
+  select(Treatment, PPD_BA_M14, SICCT_M14, Treatment_VL)
+CCT_VsPPD_BA_14
+```
+
+
+
+```{r}
+CCT_VsPPD_BA_14$Treatment_VL <- factor(CCT_VsPPD_BA_14$Treatment_VL, levels=c("Control_Positive",   "Control_Negative", "Vaccinate_Positive", "Vaccinate_Negative" ))
+ggscatterstats( data = CCT_VsPPD_BA_14,
+                x= SICCT_M14,
+                y= PPD_BA_M14 ,
+                type = "np",
+                results.subtitle = TRUE,
+                marginal = FALSE
+  ) +
+  aes(color=Treatment_VL) +
+  #geom_point(aes(color=Treatment)) +
+  #theme_few() + ggtitle("theme_few()") +
+  geom_hline(yintercept=0.1, color="red", linetype ="dashed", linewidth=0.5) +
+geom_vline(xintercept=4.0, color="blue", linetype ="dashed", linewidth=0.5) +
+  #geom_vline(xintercept=1, color="blue", linetype ="dashed", linewidth=0.9) +
+  #scale_fill_brewer(palette = "Set3") 
+  #scale_fill_brewer(palette = "Dark2")
+  #scale_colour_brewer(palette = "PiYG")
+  #scale_color_brewer(palette = "Set2")
+  scale_color_manual(values = c( "#DC143C",  "#00FF00",  "#00008B", "#00CED1"  )) +
+scale_x_continuous(name="CCT Skin thicknes change (∆mm)", limits=c(-6, 44), breaks=seq(-4, 44, 8)) +
+  scale_y_continuous(name="PPD (B-A) IGRA Delta_OD450nm", limits=c(-1, 5), breaks=seq(-1, 5, 1)) +
+ labs(title = "B", x = "CCT Skin thicknes change (∆mm)", y = "PPD (B-A) IGRA Delta_OD450nm", color= "Treatment_Visible Lesion") +
+
+theme_bw() 
+
+ggsave(file ="Suuplementary Figure 2B CCT Skin vs PPD(B-A) IGRA by Rx_VL.tiff", units="in", width=5.6, height=4.0, dpi=1200)
+```
 
 
 
