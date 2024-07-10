@@ -262,5 +262,37 @@ theme_bw()
 ggsave(file ="Suuplementary Figure 2B CCT Skin vs PPD(B-A) IGRA by Rx_VL.tiff", units="in", width=5.6, height=4.0, dpi=1200)
 ```
 
+# Test of normality of the data
 
+# 1, Shapiro-Wilk test using normality() function from {dlookr} packagep gives a p-value of <0.0001, suggesting non-normally distributed data for all antigens test data
+
+```{r}
+library(dlookr)
+AllAGs4Cor %>%
+  select(Treatment,DST1M14,DST10M14, PPD_BA_M14, SICCT_M14, PPDB_M14, SIT_M14, PPDA_M14, PPDA_STM14 ) %>% 
+  group_by(Treatment) %>%
+  normality()
+```
+# plot_histogram() and plot_density() functions from {DataExplorer} package also indicate asymmetric and non-normally distributed data.
+
+```{r}
+library (DataExplorer)
+AllAGs4Cor %>%
+  select(Treatment,DST1M14,DST10M14, PPD_BA_M14, SICCT_M14, PPDB_M14, SIT_M14, PPDA_M14, PPDA_STM14 ) %>%
+  select(DST1M14,DST10M14, PPD_BA_M14, SICCT_M14, PPDB_M14, SIT_M14, PPDA_M14, PPDA_STM14) %>% 
+  plot_density()
+```
+
+```{r}
+AllAGs4Cor %>%
+  select(Treatment,DST1M14,DST10M14, PPD_BA_M14, SICCT_M14, PPDB_M14, SIT_M14, PPDA_M14, PPDA_STM14 ) %>%
+  select(DST1M14,DST10M14, PPD_BA_M14, SICCT_M14, PPDB_M14, SIT_M14, PPDA_M14, PPDA_STM14) %>% 
+plot_histogram()
+
+```
+The plot_qq() function from {DataExplorer} package also confirms  the data does not meet the assumptions of normality, suggesting a non-parametric statistical test to be carried out  
+
+```{r}
+plot_qq(AllAGs4Cor, by = "Treatment")
+```
 
