@@ -125,4 +125,105 @@ venn.plot <- venn.diagram(
   margin = 0.2);
 
 ```
+##################################################################
+# Venn Diagram by skin and IGRA tests for both control and vaccinated groups 
+
+#########################
+
+control_skin_test =list(SIT = which(unlist(final %>% filter(Treatment=='Control') %>% select(SIT))), 
+                       DIVA.Sk=which(unlist(final %>% filter(Treatment=='Control') %>% select(DST10))),
+                       CCT=which(unlist(final %>% filter(Treatment=='Control') %>% select(CCT))),
+                       PM=which(unlist(final %>% filter(Treatment=='Control') %>% select(PM))))
+
+vaccinate_skin_test =list(SIT = which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(SIT))), 
+                         DIVA.Sk=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(DST10))),
+                         CCT=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(CCT))),
+                         PM=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(PM))))
+
+venn.plot <- venn.diagram(
+  control_skin_test, 
+  filename = 'skin_test_control.tiff',
+  col = "transparent",
+  fill = c("lightblue", "lightgreen", "lightcoral", "plum"),
+  alpha = 0.50,
+  label.col = c("black"),
+  cex = 1.5,
+  fontfamily = "serif",
+  fontface = "bold",
+  cat.col = c("blue", "darkgreen", "red", "purple"),
+  cat.cex = 1.5,
+  cat.pos = c(-10, 15, -15, 0), # Move labels upwards considerably\
+  cat.dist = c(0.22, 0.22, 0.12, 0.12), # Adjust distances\
+  cat.fontfamily = "sans",
+  rotation.degree = 0, 
+  margin = 0.2);
+
+
+venn.plot <- venn.diagram(
+  vaccinate_skin_test, 
+  filename = 'skin_test_vaccinate.tiff',
+  col = "transparent",
+  fill = c("lightblue", "lightgreen", "lightcoral", "plum"),
+  alpha = 0.50,
+  label.col = c("black"),
+  cex = 1.5,
+  fontfamily = "serif",
+  fontface = "bold",
+  cat.col = c("blue", "darkgreen", "red", "purple"),
+  cat.cex = 1.5,
+  cat.pos = c(-10, 15, -15, 0), # Move labels upwards considerably\
+  cat.dist = c(0.22, 0.22, 0.12, 0.12), # Adjust distances\
+  cat.fontfamily = "sans",
+  rotation.degree = 0, 
+  margin = 0.2);
+##########################
+
+control_IGRA_Test =list(DIVA.Ig = which(unlist(final %>% filter(Treatment=='Control') %>% select(DST1))),
+                        'PPD(B-A)'=which(unlist(final %>% filter(Treatment=='Control') %>% select(PPD_BA))),
+                        'PPD-B'=which(unlist(final %>% filter(Treatment=='Control') %>% select(PPD_B))),
+                        PM=which(unlist(final %>% filter(Treatment=='Control') %>% select(PM))))
+
+vaccinate_IGRA_Test =list(DIVA.Ig = which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(DST1))),
+                          'PPD(B-A)'=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(PPD_BA))),
+                          'PPD-B'=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(PPD_B))),
+                          PM=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(PM))))
+
+venn.plot <- venn.diagram(
+  control_IGRA_Test, 
+  filename = 'IGRA_Test_control.tiff',
+  col = "transparent",
+  fill = c("lightblue", "lightgreen", "lightcoral", "plum"),
+  alpha = 0.50,
+  label.col = c("black"),
+  cex = 1.5,
+  fontfamily = "serif",
+  fontface = "bold",
+  cat.col = c("blue", "darkgreen", "red", "purple"),
+  cat.cex = 1.5,
+  cat.pos = c(-10, 15, -15, 0), # Move labels upwards considerably\
+  cat.dist = c(0.22, 0.22, 0.12, 0.12), # Adjust distances\
+  cat.fontfamily = "sans",
+  rotation.degree = 0, 
+  margin = 0.2);
+
+
+venn.plot <- venn.diagram(
+  vaccinate_IGRA_Test, 
+  filename = 'IGRA_Test_vaccinate.tiff',
+  col = "transparent",
+  fill = c("lightblue", "lightgreen", "lightcoral", "plum"),
+  alpha = 0.50,
+  label.col = c("black"),
+  cex = 1.5,
+  fontfamily = "serif",
+  fontface = "bold",
+  cat.col = c("blue", "darkgreen", "red", "purple"),
+  cat.cex = 1.5,
+  cat.pos = c(-10, 15, -15, 0), # Move labels upwards considerably\
+  cat.dist = c(0.22, 0.22, 0.12, 0.12), # Adjust distances\
+  cat.fontfamily = "sans",
+  rotation.degree = 0, 
+  margin = 0.2);
+
+##############################
 
