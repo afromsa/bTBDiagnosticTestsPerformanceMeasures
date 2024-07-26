@@ -1,8 +1,10 @@
 ---
-title: "Code to Produce Fig 4. The Venn-Diagrams"
+title: "Code to Produce the Venn-Diagrams and Table 2"
 author: "Abebe F"
 date: "2024-06-07"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r}
@@ -21,8 +23,8 @@ final <-read.csv('final2.csv', stringsAsFactors = FALSE)
 ```
 
 
-Produce the Venn Diagram for the more specific DIVA skin, DIVA IGRA and CCT skin concordant and discordant test outcomes
-
+Produce the Venn Diagram for the more specific DIVA skin, DIVA IGRA and CCT skin concordant and discordant test outcomes on PM Status
+Figure 5 a) and b)
 
 ```{r}
 control_specific =list(DIVA.Ig = which(unlist(final %>% filter(Treatment=='Control') %>% select(DST1))),
@@ -74,7 +76,8 @@ venn.plot <- venn.diagram(
 
 ```
 
-Produce the Venn Diagram for the more specific DIVA skin, DIVA IGRA and CCT skin concordant and discordant test outcomes
+Produce the Venn Diagram for the more sensitive SIT skin, PPD (B-A) IGRA and PPD-B IGRA concordant and discordant test outcomes on PM status
+Figure 5 C) and d)
 
 ```{r}
 control_sensitive =list(SIT = which(unlist(final %>% filter(Treatment=='Control') %>% select(SIT))),
@@ -125,11 +128,12 @@ venn.plot <- venn.diagram(
   margin = 0.2);
 
 ```
-##################################################################
-# Venn Diagram by skin and IGRA tests for both control and vaccinated groups 
 
-#########################
 
+Skin Test Response on PM Status Grouped by Treatments 
+Supplementary Figure S3 a) and b)
+
+```{r}
 control_skin_test =list(SIT = which(unlist(final %>% filter(Treatment=='Control') %>% select(SIT))), 
                        DIVA.Sk=which(unlist(final %>% filter(Treatment=='Control') %>% select(DST10))),
                        CCT=which(unlist(final %>% filter(Treatment=='Control') %>% select(CCT))),
@@ -176,8 +180,13 @@ venn.plot <- venn.diagram(
   cat.fontfamily = "sans",
   rotation.degree = 0, 
   margin = 0.2);
-##########################
+```
 
+
+IGRA Test Response on PM Status Grouped by Treatments 
+Supplementary Figure S3 c) and d)
+
+```{r}
 control_IGRA_Test =list(DIVA.Ig = which(unlist(final %>% filter(Treatment=='Control') %>% select(DST1))),
                         'PPD(B-A)'=which(unlist(final %>% filter(Treatment=='Control') %>% select(PPD_BA))),
                         'PPD-B'=which(unlist(final %>% filter(Treatment=='Control') %>% select(PPD_B))),
@@ -224,6 +233,165 @@ venn.plot <- venn.diagram(
   cat.fontfamily = "sans",
   rotation.degree = 0, 
   margin = 0.2);
+```
 
-##############################
+Skin Test Response on M_bovis PCR Status Grouped by Treatments 
+Supplementary Figure S4 a) and b)
+
+```{r}
+control_skin_test_Vs_PCR =list(SIT = which(unlist(final %>% filter(Treatment=='Control') %>% select(SIT))), 
+                        DIVA.Sk=which(unlist(final %>% filter(Treatment=='Control') %>% select(DST10))),
+                        CCT=which(unlist(final %>% filter(Treatment=='Control') %>% select(CCT))),
+                        PCR=which(unlist(final %>% filter(Treatment=='Control') %>% select(PCR))))
+
+vaccinate_skin_test_Vs_PCR =list(SIT = which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(SIT))), 
+                          DIVA.Sk=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(DST10))),
+                          CCT=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(CCT))),
+                          PCR=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(PCR))))
+
+venn.plot <- venn.diagram(
+  control_skin_test_Vs_PCR, 
+  filename = 'skin_test_control_on_PCR.tiff',
+  col = "transparent",
+  fill = c("lightblue", "lightgreen", "lightcoral", "plum"),
+  alpha = 0.50,
+  label.col = c("black"),
+  cex = 1.5,
+  fontfamily = "serif",
+  fontface = "bold",
+  cat.col = c("blue", "darkgreen", "red", "purple"),
+  cat.cex = 1.5,
+  cat.pos = c(-10, 15, -15, 0), # Move labels upwards considerably\
+  cat.dist = c(0.22, 0.22, 0.12, 0.12), # Adjust distances\
+  cat.fontfamily = "sans",
+  rotation.degree = 0, 
+  margin = 0.2);
+
+
+venn.plot <- venn.diagram(
+  vaccinate_skin_test_Vs_PCR, 
+  filename = 'skin_test_vaccinate_on_PCR.tiff',
+  col = "transparent",
+  fill = c("lightblue", "lightgreen", "lightcoral", "plum"),
+  alpha = 0.50,
+  label.col = c("black"),
+  cex = 1.5,
+  fontfamily = "serif",
+  fontface = "bold",
+  cat.col = c("blue", "darkgreen", "red", "purple"),
+  cat.cex = 1.5,
+  cat.pos = c(-10, 15, -15, 0), # Move labels upwards considerably\
+  cat.dist = c(0.22, 0.22, 0.12, 0.12), # Adjust distances\
+  cat.fontfamily = "sans",
+  rotation.degree = 0, 
+  margin = 0.2);
+
+```
+
+
+IGRA Test Response on PM Status Grouped by Treatments 
+Supplementary Figure S4 c) and d)
+
+```{r}
+control_IGRA_Test_Vs_PCR =list(DIVA.Ig = which(unlist(final %>% filter(Treatment=='Control') %>% select(DST1))),
+                        'PPD(B-A)'=which(unlist(final %>% filter(Treatment=='Control') %>% select(PPD_BA))),
+                        'PPD-B'=which(unlist(final %>% filter(Treatment=='Control') %>% select(PPD_B))),
+                        PCR=which(unlist(final %>% filter(Treatment=='Control') %>% select(PCR))))
+
+vaccinate_IGRA_Test_Vs_PCR =list(DIVA.Ig = which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(DST1))),
+                          'PPD(B-A)'=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(PPD_BA))),
+                          'PPD-B'=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(PPD_B))),
+                          PCR=which(unlist(final %>% filter(Treatment=='Vaccinate') %>% select(PCR))))
+
+venn.plot <- venn.diagram(
+  control_IGRA_Test_Vs_PCR, 
+  filename = 'IGRA_Test_control_on_PCR.tiff',
+  col = "transparent",
+  fill = c("lightblue", "lightgreen", "lightcoral", "plum"),
+  alpha = 0.50,
+  label.col = c("black"),
+  cex = 1.5,
+  fontfamily = "serif",
+  fontface = "bold",
+  cat.col = c("blue", "darkgreen", "red", "purple"),
+  cat.cex = 1.5,
+  cat.pos = c(-10, 15, -15, 0), # Move labels upwards considerably\
+  cat.dist = c(0.22, 0.22, 0.12, 0.12), # Adjust distances\
+  cat.fontfamily = "sans",
+  rotation.degree = 0, 
+  margin = 0.2);
+
+
+venn.plot <- venn.diagram(
+  vaccinate_IGRA_Test_Vs_PCR, 
+  filename = 'IGRA_Test_vaccinate_on_PCR.tiff',
+  col = "transparent",
+  fill = c("lightblue", "lightgreen", "lightcoral", "plum"),
+  alpha = 0.50,
+  label.col = c("black"),
+  cex = 1.5,
+  fontfamily = "serif",
+  fontface = "bold",
+  cat.col = c("blue", "darkgreen", "red", "purple"),
+  cat.cex = 1.5,
+  cat.pos = c(-10, 15, -15, 0), # Move labels upwards considerably\
+  cat.dist = c(0.22, 0.22, 0.12, 0.12), # Adjust distances\
+  cat.fontfamily = "sans",
+  rotation.degree = 0, 
+  margin = 0.2);
+
+```
+
+
+
+```{r}
+library(sjPlot)
+library(gtsummary)
+```
+```{r}
+names(final)
+```
+Summary of Skin and IGRA Test positives classified by PCR alone, Gross VL alone as well as either of Gross VL, Culture and PCR for Table 2
+
+
+```{r}
+library(gtsummary)
+final %>%
+select(Treatment, DST10, CCT, SIT, DST1, PPD_BA, PPD_B, PM, Fasciola,PCR, Gross_VL  ) %>%
+tbl_summary(by = Treatment) %>%
+  add_p() %>% 
+  add_overall() 
+```
+
+```{r}
+final %>%
+  select(Treatment, DST10, CCT, SIT, DST1, PPD_BA, PPD_B, PM, Fasciola,PCR, Gross_VL  ) %>%
+  tbl_strata(
+    strata = PCR, 
+    ~.x %>% 
+      tbl_summary(by = Treatment)) 
+```
+
+
+
+
+```{r}
+final %>%
+  select(Treatment, DST10, CCT, SIT, DST1, PPD_BA, PPD_B, PM, Fasciola,PCR, Gross_VL  ) %>%
+  tbl_strata(
+    strata = PM, 
+    ~.x %>% 
+      tbl_summary(by = Treatment))
+```
+
+```{r}
+library(gtsummary)
+final %>%
+  select(Treatment, DST10, CCT, SIT, DST1, PPD_BA, PPD_B, PM, Fasciola,PCR, Gross_VL  ) %>%
+  tbl_strata(
+    strata = Gross_VL, 
+    ~.x %>% 
+      tbl_summary(by = Treatment))
+
+```
 
